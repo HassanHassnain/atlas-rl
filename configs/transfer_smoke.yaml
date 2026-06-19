@@ -1,0 +1,16 @@
+# CPU-only transfer-pipeline check. These mock policies validate the matrix
+# machinery; they are not research results.
+n_per_env: 3
+difficulties: [2, 4]
+temperature: 0.2
+top_p: 0.95
+max_new_tokens: 128
+envs: [cron_author, log_triage, shell_golf]
+
+models:
+  - name: mock_oracle
+    spec: "mock:oracle"
+    trained_on: [cron_author, log_triage, shell_golf]
+  - name: mock_noisy
+    spec: "mock:noisy_oracle:0.5"
+    trained_on: [cron_author]

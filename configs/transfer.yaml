@@ -1,0 +1,27 @@
+# Cross-environment generalization study: train on subsets, evaluate on all.
+# Train the two held-out-family checkpoints first: each uses the same GRPO
+# settings with dataset.envs restricted to the intended subset.
+n_per_env: 5
+difficulties: [2, 3, 4]
+temperature: 0.2
+max_new_tokens: 256
+
+models:
+  - name: grpo_all_envs
+    spec: "hf:Qwen/Qwen2.5-3B-Instruct:adapter=checkpoints/grpo_3b/final"
+    trained_on: [ci_doctor, config_repair, cron_author, dockerfile_lint,
+                 k8s_doctor, log_triage, regex_extract, runbook_planner,
+                 semver_resolve, shell_golf]
+  - name: grpo_no_synthesis
+    spec: "hf:Qwen/Qwen2.5-3B-Instruct:adapter=checkpoints/grpo_no_synthesis/final"
+    trained_on: [ci_doctor, config_repair, dockerfile_lint, k8s_doctor,
+                 log_triage, runbook_planner, semver_resolve]
+    # held out: shell_golf, cron_author, regex_extract (synthesis family)
+  - name: grpo_no_triage
+    spec: "hf:Qwen/Qwen2.5-3B-Instruct:adapter=checkpoints/grpo_no_triage/final"
+    trained_on: [config_repair, cron_author, dockerfile_lint, k8s_doctor,
+                 regex_extract, semver_resolve, shell_golf]
+    # held out: log_triage, ci_doctor, runbook_planner (triage/planning family)
+  - name: base_3b
+    spec: "hf:Qwen/Qwen2.5-3B-Instruct"
+    trained_on: []

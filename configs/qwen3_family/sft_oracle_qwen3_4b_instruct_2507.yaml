@@ -1,0 +1,28 @@
+model:
+  id: Qwen/Qwen3-4B-Instruct-2507
+
+dataset:
+  path: misc/data/generated/train.jsonl
+  envs: null
+
+oracle:
+  max_prompts: 3000
+
+sft_dataset: misc/data/qwen3_family/sft_oracle_qwen3_4b_instruct_2507.jsonl
+output_dir: misc/checkpoints/qwen3_family/sft_oracle_qwen3_4b_instruct_2507
+
+lora:
+  r: 64
+  alpha: 128
+  dropout: 0.05
+
+train:
+  num_train_epochs: 2
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  learning_rate: 2.0e-5
+  max_length: 2048
+  gradient_checkpointing: true
+  logging_steps: 20
+  save_steps: 400
+  seed: 17

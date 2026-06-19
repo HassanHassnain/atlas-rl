@@ -1,0 +1,23 @@
+# Training/inference requirements (RUNTIME-ONLY: install on the RTX 3090 box).
+# Tested combination for CUDA 12.x on Ampere (RTX 3090, 24 GB).
+#
+#   pip install -e ".[dev]" && pip install -r requirements-train.txt
+#
+# NOTE: trl is pinned because the GRPOTrainer reward-function signature
+# (reward_funcs receiving dataset columns as kwargs) is what
+# atlas_rl/training/grpo_train.py relies on. If you upgrade trl, re-check
+# atlas_rl/training/grpo_train.py:make_reward_fn.
+torch>=2.4,<2.8
+transformers>=4.49,<4.56
+trl==0.17.0
+peft>=0.14
+accelerate>=1.2
+bitsandbytes>=0.45
+datasets>=3.0
+openai>=1.50          # used for OpenAI-compatible eval backends (vLLM serve, OpenRouter, etc.)
+tensorboard>=2.16
+
+# Optional but recommended on the 3090 box:
+#   vllm>=0.8           # fast generation for TRL server mode + serving the 72B baseline (needs A100/2x3090 won't fit 72B; use API instead)
+#   unsloth             # alternative fast GRPO LoRA path
+#   flash-attn          # speeds up training if it builds on your CUDA setup

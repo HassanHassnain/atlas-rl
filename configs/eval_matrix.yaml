@@ -1,0 +1,35 @@
+# The baseline matrix from the project plan: base / SFT / GRPO / 10x-larger /
+# frontier API — all evaluated on the SAME held-out instances.
+# Used by scripts/20_eval_matrix.sh (which loops over these entries).
+eval:
+  n_per_env: 10
+  difficulties: [2, 3, 4]
+  k: 1
+  temperature: 0.2
+  top_p: 0.95
+  max_new_tokens: 256
+
+models:
+  - name: base_1p5b
+    spec: "hf:Qwen/Qwen2.5-1.5B-Instruct"
+  - name: base_3b
+    spec: "hf:Qwen/Qwen2.5-3B-Instruct"
+  - name: grpo_1p5b_pilot
+    spec: "hf:Qwen/Qwen2.5-1.5B-Instruct:adapter=checkpoints/grpo_1p5b_pilot/final"
+  - name: grpo_3b
+    spec: "hf:Qwen/Qwen2.5-3B-Instruct:adapter=checkpoints/grpo_3b/final"
+  - name: sft_rs_3b
+    spec: "hf:Qwen/Qwen2.5-3B-Instruct:adapter=checkpoints/sft_rs_3b/final"
+  - name: sft_oracle_3b
+    spec: "hf:Qwen/Qwen2.5-3B-Instruct:adapter=checkpoints/sft_oracle_3b/final"
+  - name: grpo_oracle_stable_3b
+    spec: "hf:Qwen/Qwen2.5-3B-Instruct:adapter=checkpoints/grpo_oracle_stable_3b/final"
+  # 32.764B vs 3.086B parameters: a reproducible 10.62x-larger open baseline.
+  # Full-bf16 local inference needs roughly 66 GB of aggregate GPU memory.
+  - name: qwen_32b
+    spec: "hf:Qwen/Qwen2.5-32B-Instruct"
+  # ---- Optional frontier API reference point:
+  # - name: frontier
+  #   spec: "openai:gpt-4.1-mini@https://api.openai.com/v1"
+
+baseline: base_3b   # paired comparisons are computed against this run

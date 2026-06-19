@@ -1,0 +1,21 @@
+# Committed protocol for the one-shot final blind evaluation. Model/config
+# selection used only the development-eval range beginning at 1,000,000.
+eval:
+  seed_base: 4000000
+  seed_offset: 3000000
+  n_per_env: 10
+  difficulties: [2, 3, 4]
+  k: 1
+  temperature: 0.2
+  top_p: 0.95
+  max_new_tokens: 256
+
+models:
+  - name: base_3b
+    spec: "hf:Qwen/Qwen2.5-3B-Instruct"
+  - name: grpo_oracle_stable_3b
+    spec: "hf:Qwen/Qwen2.5-3B-Instruct:adapter=checkpoints/grpo_oracle_stable_3b/final"
+  - name: qwen_32b
+    spec: "hf:Qwen/Qwen2.5-32B-Instruct"
+
+baseline: base_3b

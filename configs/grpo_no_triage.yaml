@@ -1,0 +1,37 @@
+# Transfer-study checkpoint: GRPO on a subset of envs (no_triage). RUNTIME-ONLY.
+# Auto-derived from grpo_qwen3b_3090.yaml for the transfer study.
+model:
+  id: Qwen/Qwen2.5-3B-Instruct
+  load_in_4bit: true
+  attn_implementation: null
+lora:
+  enabled: true
+  r: 16
+  alpha: 32
+  dropout: 0.05
+dataset:
+  path: data/generated/train.jsonl
+  envs:
+  - config_repair
+  - cron_author
+  - dockerfile_lint
+  - k8s_doctor
+  - regex_extract
+  - semver_resolve
+  - shell_golf
+output_dir: checkpoints/grpo_no_triage
+train:
+  max_steps: 20
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 1
+  num_generations: 2
+  learning_rate: 8.0e-06
+  beta: 0.04
+  temperature: 0.7
+  top_p: 0.95
+  max_prompt_length: 1024
+  max_completion_length: 192
+  gradient_checkpointing: false
+  logging_steps: 5
+  save_steps: 10
+  seed: 17

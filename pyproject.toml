@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "atlas-rl"
+version = "0.1.0"
+description = "Verifiable DevOps/SRE RL environments for testing small-model post-training"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Atlas-RL FYP Team" }]
+dependencies = [
+    "pyyaml>=6.0",
+    "regex>=2024.4.16",
+    "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "matplotlib>=3.8", "ruff>=0.9"]
+train = [
+    # See requirements-train.txt for pinned, 3090-tested versions.
+    "torch", "transformers", "trl", "peft", "accelerate",
+    "bitsandbytes", "datasets", "openai", "tensorboard",
+]
+
+[project.scripts]
+atlas-data = "atlas_rl.data.build_dataset:main"
+atlas-eval = "atlas_rl.evaluation.run_eval:main"
+atlas-report = "atlas_rl.evaluation.report:main"
+atlas-transfer = "atlas_rl.evaluation.transfer_matrix:main"
+atlas-audit = "atlas_rl.rewards.hacking_audit:main"
+atlas-train-grpo = "atlas_rl.training.grpo_train:main"
+atlas-sft-rs = "atlas_rl.training.sft_rs_baseline:main"
+atlas-demo = "atlas_rl.demo:main"
+
+[tool.setuptools.packages.find]
+include = ["atlas_rl*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+exclude = [".hf-cache", ".tmp", ".uv-cache", ".venv", "checkpoints", "data/generated", "results"]
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["E501", "E741"]

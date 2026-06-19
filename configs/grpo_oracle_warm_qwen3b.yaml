@@ -1,0 +1,42 @@
+# GRPO continuation from the deterministic oracle-SFT curriculum.
+model:
+  id: Qwen/Qwen2.5-3B-Instruct
+  load_in_4bit: true
+  attn_implementation: null
+  init_adapter: checkpoints/sft_oracle_3b/final
+
+lora:
+  enabled: false
+
+dataset:
+  path: data/generated/train.jsonl
+  # log_triage prompts are 4k-9k tokens and are already strong zero-shot.
+  # Keep GRPO feedback semantically valid instead of truncating those incidents.
+  envs:
+    - ci_doctor
+    - config_repair
+    - cron_author
+    - dockerfile_lint
+    - k8s_doctor
+    - regex_extract
+    - runbook_planner
+    - semver_resolve
+    - shell_golf
+
+output_dir: checkpoints/grpo_oracle_stable_3b
+
+train:
+  max_steps: 20
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 1
+  num_generations: 2
+  learning_rate: 1.0e-6
+  beta: 0.20
+  temperature: 0.7
+  top_p: 0.95
+  max_prompt_length: 1280
+  max_completion_length: 256
+  gradient_checkpointing: false
+  logging_steps: 5
+  save_steps: 10
+  seed: 17

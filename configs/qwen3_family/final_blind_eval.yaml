@@ -1,0 +1,34 @@
+# Sealed one-shot Qwen3-family blind evaluation.
+#
+# This range was confirmed unused before this protocol was written. Candidate
+# models and generation settings were frozen from the completed development
+# ablation. Do not tune or rerun models after reading these results.
+seal:
+  date: "2026-06-14"
+  purpose: qwen3_family_final_blind
+  prior_qwen3_manifest_sha256: f2d9af7c8c6c09dc3043039b9ce5afd921b813909f00a26b81885aa53f12d0c3
+  prior_qwen25_manifest_sha256: ab922945fc04c451438073b3e986af351033dd48ca496071f912886f01d87378
+  no_post_blind_tuning: true
+
+eval:
+  seed_base: 5000000
+  seed_offset: 4000000
+  n_per_env: 10
+  difficulties: [2, 3, 4]
+  k: 1
+  temperature: 0.2
+  top_p: 0.95
+  max_new_tokens: 256
+
+models:
+  - name: qwen3_4b_instruct_2507_base
+    spec: "hf:Qwen/Qwen3-4B-Instruct-2507"
+  - name: qwen3_4b_instruct_2507_sft_oracle
+    spec: "hf:Qwen/Qwen3-4B-Instruct-2507:adapter=misc/checkpoints/qwen3_family/sft_oracle_qwen3_4b_instruct_2507/final"
+  - name: qwen3_4b_instruct_2507_grpo_stable
+    spec: "hf:Qwen/Qwen3-4B-Instruct-2507:adapter=misc/checkpoints/qwen3_family/grpo_stable_qwen3_4b_instruct_2507/final"
+  - name: qwen3_30b_a3b_instruct_2507
+    spec: "hf:Qwen/Qwen3-30B-A3B-Instruct-2507"
+
+baseline: qwen3_4b_instruct_2507_base
+output_root: misc/results/qwen3_family/final_blind

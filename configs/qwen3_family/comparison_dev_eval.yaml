@@ -1,0 +1,22 @@
+# Development-set comparison only. The sealed final-blind range is excluded.
+eval:
+  seed_offset: 0
+  n_per_env: 10
+  difficulties: [2, 3, 4]
+  k: 1
+  temperature: 0.2
+  top_p: 0.95
+  max_new_tokens: 256
+
+models:
+  - name: qwen3_4b_instruct_2507_base
+    spec: "hf:Qwen/Qwen3-4B-Instruct-2507"
+  - name: qwen3_4b_instruct_2507_sft_oracle
+    spec: "hf:Qwen/Qwen3-4B-Instruct-2507:adapter=misc/checkpoints/qwen3_family/sft_oracle_qwen3_4b_instruct_2507/final"
+  - name: qwen3_4b_instruct_2507_grpo_stable
+    spec: "hf:Qwen/Qwen3-4B-Instruct-2507:adapter=misc/checkpoints/qwen3_family/grpo_stable_qwen3_4b_instruct_2507/final"
+  - name: qwen3_30b_a3b_instruct_2507
+    spec: "hf:Qwen/Qwen3-30B-A3B-Instruct-2507"
+
+baseline: qwen3_4b_instruct_2507_base
+output_root: misc/results/qwen3_family/comparison_dev

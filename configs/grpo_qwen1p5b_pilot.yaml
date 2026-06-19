@@ -1,0 +1,41 @@
+# Pilot run (project plan step 1): small + fast, validates the whole RL loop.
+# Hardware: ONE RTX 3090 (24 GB). Measured single-GPU pilot settings.
+model:
+  id: Qwen/Qwen2.5-1.5B-Instruct
+  load_in_4bit: false          # 1.5B fits in bf16 with LoRA on 24 GB
+  attn_implementation: null    # set to flash_attention_2 if installed
+
+lora:
+  enabled: true
+  r: 32
+  alpha: 64
+  dropout: 0.05
+
+dataset:
+  path: data/generated/train.jsonl
+  envs: null                   # all 10; set a list to pilot 2 envs first
+
+output_dir: checkpoints/grpo_1p5b_pilot
+
+train:
+  max_steps: 100
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 1
+  num_generations: 2
+  learning_rate: 1.0e-5
+  beta: 0.04                   # KL penalty vs reference
+  temperature: 0.9
+  top_p: 0.95
+  max_prompt_length: 1536
+  max_completion_length: 256
+  gradient_checkpointing: false
+  logging_steps: 5
+  save_steps: 50
+  seed: 17
+
+# Two-GPU variant: start `trl vllm-serve --model Qwen/Qwen2.5-1.5B-Instruct`
+# on GPU 0, then uncomment:
+# vllm:
+#   use_vllm: true
+#   vllm_server_host: 127.0.0.1
+#   vllm_server_port: 8000

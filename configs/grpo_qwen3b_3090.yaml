@@ -1,0 +1,44 @@
+# Main run: Qwen2.5-3B-Instruct, QLoRA GRPO on ONE RTX 3090 (24 GB).
+# Settings below were measured end-to-end on a 24 GB card.
+model:
+  id: Qwen/Qwen2.5-3B-Instruct
+  load_in_4bit: true           # QLoRA: needed to fit 8 generations on 24 GB
+  attn_implementation: null    # set to flash_attention_2 if installed
+
+lora:
+  enabled: true
+  r: 32
+  alpha: 64
+  dropout: 0.05
+
+dataset:
+  path: data/generated/train.jsonl
+  envs: null
+
+output_dir: checkpoints/grpo_3b
+
+train:
+  max_steps: 50
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 1
+  num_generations: 2
+  learning_rate: 8.0e-6
+  beta: 0.04
+  temperature: 0.7
+  top_p: 0.95
+  max_prompt_length: 1024
+  max_completion_length: 192
+  gradient_checkpointing: false
+  logging_steps: 5
+  save_steps: 10
+  seed: 17
+
+# Two-GPU setup (recommended): GPU 0 serves generations, GPU 1 trains.
+#   Terminal A: CUDA_VISIBLE_DEVICES=0 trl vllm-serve --model Qwen/Qwen2.5-3B-Instruct
+#   Terminal B: CUDA_VISIBLE_DEVICES=1 python -m atlas_rl.training.grpo_train \
+#                 --config configs/grpo_qwen3b_3090.yaml
+# and uncomment:
+# vllm:
+#   use_vllm: true
+#   vllm_server_host: 127.0.0.1
+#   vllm_server_port: 8000

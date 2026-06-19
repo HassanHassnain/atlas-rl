@@ -1,0 +1,20 @@
+# Additive newer-Qwen base-model ablation on the development evaluation range.
+eval:
+  seed_offset: 0
+  n_per_env: 10
+  difficulties: [2, 3, 4]
+  k: 1
+  temperature: 0.2
+  top_p: 0.95
+  max_new_tokens: 256
+
+models:
+  - name: qwen3_1p7b_base
+    spec: "hf:Qwen/Qwen3-1.7B:thinking=false"
+  - name: qwen3_4b_base
+    spec: "hf:Qwen/Qwen3-4B:thinking=false"
+  - name: qwen3_4b_instruct_2507_base
+    spec: "hf:Qwen/Qwen3-4B-Instruct-2507"
+
+baseline: qwen3_1p7b_base
+output_root: misc/results/qwen3_family/base_dev
